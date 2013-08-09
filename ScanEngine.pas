@@ -1,4 +1,10 @@
 unit ScanEngine;
+// install the clamav signature files on the folder db
+// example:
+//  
+// C:\delphiav       <-- your executable
+// C:\delphiav\db    <-- your virus signature
+
 
 interface
 
