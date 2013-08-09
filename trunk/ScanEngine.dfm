@@ -1,9 +1,9 @@
 object Form4: TForm4
-  Left = 0
-  Top = 0
+  Left = 345
+  Top = 222
   BorderStyle = bsToolWindow
-  Caption = 'Scanner Proof of Concept - reyjie.u.roque@hotmail.com'
-  ClientHeight = 226
+  Caption = 'Scanner Proof of Concept - reyjie.u.roque@gmail.com'
+  ClientHeight = 227
   ClientWidth = 482
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -66,7 +66,7 @@ object Form4: TForm4
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 207
+    Top = 208
     Width = 482
     Height = 19
     Panels = <

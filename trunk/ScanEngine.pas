@@ -60,12 +60,17 @@ begin
     end;
 end;
 
+function str2pas(C : PChar):String;
+begin
+ result := String(C);
+end;
+
 procedure TForm4.Button2Click(Sender: TObject);
 var
 //  h : Integer;
-  scanme          : PAnsiChar;
+  scanme          : String;
   ret             : integer;
-  scanned         : Cardinal;
+  scanned         : Word;
   virname         : PAnsiChar;
   S               : String;
   InfectionCnt    : Integer;
@@ -73,7 +78,7 @@ var
 
       Function __ScanFile(const xfilex: String):Integer;
       begin
-        Result := cl_scanfile(PAnsiChar(xfilex), @virname, scanned, engine, CL_SCAN_STDOPT);
+        Result := cl_scanfile(PChar(xfilex), @virname, scanned, engine, CL_SCAN_STDOPT);
       end;
 
       Function __ScanDir(const xdirx: String): Integer;
@@ -92,13 +97,13 @@ var
             begin
 //              Memo1.Lines.Add(Res.Name) ;
               StatusBar1.Panels[1].Text := '[-] > Scanning - ['+res.Name+']';
-              Scanme := PChar(Res.Name);
+              Scanme := Res.Name;
               virname := '';
               TotalFiles := TotalFiles+1;
               ret  := 0;
               ret := __ScanFile(scanme);
               if ret = (CL_CLEAN or CL_SUCCESS) then
-                  S := cl_strerror(ret)
+                  S := str2pas(cl_strerror(ret))
               else
                 begin
                   if ret = CL_VIRUS then
@@ -141,7 +146,7 @@ begin
         //ret := cl_scanfile(ScanMe, @virname, scanned, engine, CL_SCAN_RAW or CL_SCAN_ALGORITHMIC);
         ret := __ScanFile(scanme);
         if ret = (CL_CLEAN or CL_SUCCESS) then
-          S := cl_strerror(ret)
+          S := str2pas(cl_strerror(ret))
         else
           if ret = CL_VIRUS then S:= AnsiString(virname);
         Memo1.Lines.Add(Format('Scan --> %s <-- %s',[ExtractFileName(scanme),S]));
@@ -159,8 +164,10 @@ end;
 procedure TForm4.Timer1Timer(Sender: TObject);
 var
     s   : String;
-    ret,sigs : Integer;
+    ret : Integer;
+    sigs : word;
 begin
+//  Memo1.Lines.Add('timerin');
   if isDBLoaded then
       Timer1.Enabled := FALSE
   else
@@ -184,11 +191,11 @@ begin
                 end
               else
                 begin
-                  s := '>>MyScan Engine - ClamAV : ' +cl_retver;
+                  s := '>>MyScan Engine - ClamAV : ' +Str2Pas(cl_retver);
                   Memo1.Lines.Add(s);
                   sigs :=0;
                   Memo1.Lines.Add('Loading Virus Signature');
-                  ret := cl_load('db\', engine, sigs, CL_DB_OFFICIAL);
+                  ret := cl_load(cl_retdbdir, engine, sigs, CL_DB_OFFICIAL);
                   if ret <> CL_SUCCESS then
                     begin
                       Memo1.Lines.Add('Unable to LoadDB');
