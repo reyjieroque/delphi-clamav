@@ -1,21 +1,6 @@
 unit clamav3;
 interface
 
-{
-  Automatically converted by H2Pas 1.0.0 from clamav.h
-  The following command line parameters were used:
-    -v
-    -x
-    -w
-    -D
-    -e
-    -p
-    -P
-    -s
-    -S
-    clamav.h
-}
-
   const
     External_library='libclamav.dll'; {Setup as you need}
 
@@ -39,10 +24,7 @@ interface
   Pphishcheck     = Pointer;
   Pregex_matcher  = Pointer;
   PStat           = Pointer;
-{$ifndef __CLAMAV_H}
-{$define __CLAMAV_H}  
-{.$include <sys/types.h>}
-{.$include <sys/stat.h>}
+
 
   const
     CL_COUNT_PRECISION = 4096;
