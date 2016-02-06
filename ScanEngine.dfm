@@ -28,7 +28,7 @@ object Form4: TForm4
     Width = 377
     Height = 21
     TabOrder = 0
-    Text = '-'
+    Text = 'C:\Users\cristian.gallas\Downloads'
   end
   object Button1: TButton
     Left = 391

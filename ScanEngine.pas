@@ -10,7 +10,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, ClamAV3, ComCtrls, XPMan;
+  Dialogs, StdCtrls, ExtCtrls,  ComCtrls, XPMan;
 
 type
   TForm4 = class(TForm)
@@ -39,13 +39,13 @@ var
 
 implementation
 Uses
-  DirC;
+  DirC,ClamAV3;
 
 {$R *.dfm}
 
 var
+//Engine      : cl_engine;
   isDBLoaded  : Boolean;
-  Engine      : cl_engine;
   DirPopup    : TForm1;
 
 
@@ -84,7 +84,10 @@ var
 
       Function __ScanFile(const xfilex: String):Integer;
       begin
-        Result := cl_scanfile(PChar(xfilex), @virname, scanned, engine, CL_SCAN_STDOPT);
+        try
+          Result := cl_scanfile(PChar(xfilex), @virname, scanned, cl_engine(engine^), CL_SCAN_STDOPT);
+        except
+        end;
       end;
 
       Function __ScanDir(const xdirx: String): Integer;
@@ -103,7 +106,7 @@ var
             begin
 //              Memo1.Lines.Add(Res.Name) ;
               StatusBar1.Panels[1].Text := '[-] > Scanning - ['+res.Name+']';
-              Scanme := Res.Name;
+              Scanme := xdirx+'\'+Res.Name;
               virname := '';
               TotalFiles := TotalFiles+1;
               ret  := 0;
@@ -169,9 +172,9 @@ end;
 
 procedure TForm4.Timer1Timer(Sender: TObject);
 var
-    s   : String;
+    path, s   : String;
     ret : Integer;
-    sigs : word;
+    sigs : longint;
 begin
 //  Memo1.Lines.Add('timerin');
   if isDBLoaded then
@@ -190,8 +193,9 @@ begin
           ret := cl_init(CL_INIT_DEFAULT);
           if ret = CL_SUCCESS then
             begin
-              Engine := cl_engine_new()^;
-              if not Assigned(@Engine) then
+              //Engine := cl_engine_new()^;
+              Engine := cl_engine_new();
+              if not Assigned(Engine) then
                 begin
                   Memo1.Lines.Add('Unable to create new AV-Engine');
                 end
@@ -201,24 +205,26 @@ begin
                   Memo1.Lines.Add(s);
                   sigs :=0;
                   Memo1.Lines.Add('Loading Virus Signature');
-                  ret := cl_load(cl_retdbdir, engine, sigs, CL_DB_OFFICIAL);
+                  path := 'database';
+                  ret := cl_load(PChar(path) {  cl_retdbdir}, cl_engine(engine^), sigs, {CL_DB_STDOPT);//}CL_DB_OFFICIAL);
                   if ret <> CL_SUCCESS then
                     begin
                       Memo1.Lines.Add('Unable to LoadDB');
-                      cl_engine_free(engine);
+                      cl_engine_free(cl_engine(engine^));
                     end
                   else
                     begin
-                      ret :=  cl_engine_compile(engine);
+                      ret :=  cl_engine_compile(cl_engine(engine^));
                       if ret = CL_SUCCESS then
                         begin
                           Memo1.Lines.Add('Database Loaded : ('+IntToStr(sigs)+') Signatures');
                           isDBLoaded := TRUE;
+            
                         end
                         else
                         begin
                           Memo1.Lines.Add('Database INIT Error');
-                          cl_engine_free(engine);
+                          cl_engine_free(cl_engine(engine^));
                         end;
                     end;
                 end;
