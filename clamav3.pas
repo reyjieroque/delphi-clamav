@@ -1,9 +1,18 @@
 unit clamav3;
 
+{$IFDEF Fpc}
+  {$MODE Delphi}
+{$ENDIF}
+
 interface
 
 const
+ {$IFDEF Linux}
+  External_library='/usr/lib/libclamav.so.6'; {Setup as you need}
+  //Use an absolute path or create a Symlink
+ {$ELSE}
   External_library = 'libclamav.dll'; {Setup as you need}
+ {$ENDIF}
 
 type
   DWord = Word;
@@ -375,7 +384,7 @@ function IsClamAVLibPresent: Boolean;
 implementation
 
 uses
-  Windows, SysUtils;
+{$IFDEF Windows} Windows, {$ENDIF} SysUtils,Dynlibs;
 
 var
   hlib: HMODULE = 0;
@@ -432,17 +441,19 @@ begin
 end;
 
 procedure Loadclamav(lib: PAnsiChar);
-  procedure assign_proc(var proc: FARPROC; name: PAnsiChar);
+  procedure assign_proc(var proc: Pointer; name: PAnsiChar);
   begin
     proc := GetProcAddress(hlib, name);
     if proc <> nil then
       PushProc(@proc);
   end;
 begin
+  {$IFDEF Windows}
   Freeclamav;
+ {$ENDIF}
   hlib := LoadLibrary(lib);
   if hlib = 0 then
-    raise Exception.Create(format('Could not load library: %s', [lib]));
+  raise Exception.Create(format('Could not load library: %s', [lib]));
   assign_proc(@cl_init, 'cl_init');
   assign_proc(@cl_engine_new, 'cl_engine_new');
   assign_proc(@cl_engine_set_num, 'cl_engine_set_num');
