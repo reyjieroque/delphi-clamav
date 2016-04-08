@@ -41,6 +41,7 @@ type
   Pcl_error_t = ^cl_error_t;
   cl_error_t = Longint;
 const
+  {libclamav specific}
   CL_CLEAN = 0;
   CL_SUCCESS = 0;
   CL_VIRUS = 1;
@@ -50,6 +51,7 @@ const
   CL_ECVD = 5;
   CL_EVERIFY = 6;
   CL_EUNPACK = 7;
+  {I/O and memory errors}
   CL_EOPEN = 8;
   CL_ECREAT = 9;
   CL_EUNLINK = 10;
@@ -64,18 +66,22 @@ const
   CL_EMAP = 19;
   CL_EMEM = 20;
   CL_ETIMEOUT = 21;
+  {internal (not reported outside libclamav)}
   CL_BREAK = 22;
   CL_EMAXREC = 23;
   CL_EMAXSIZE = 24;
   CL_EMAXFILES = 25;
   CL_EFORMAT = 26;
-  CL_EBYTECODE = 27;
-  CL_EBYTECODE_TESTFAIL = 28;
-  CL_ELOCK = 29;
-  CL_EBUSY = 30;
-  CL_ESTATE = 31;
-  CL_ELAST_ERROR = 32;
-
+  CL_EPARSE = 27;
+  CL_EBYTECODE = 28;
+  CL_EBYTECODE_TESTFAIL = 29;
+  {c4w error codes}
+  CL_ELOCK = 30;
+  CL_EBUSY = 31;
+  CL_ESTATE = 32;
+  {no error codes below this line please}
+  CL_ELAST_ERROR = 33;
+  {db options}
   CL_DB_PHISHING = $2;
   CL_DB_PHISHING_URLS = $8;
   CL_DB_PUA = $10;
@@ -90,8 +96,15 @@ const
   CL_DB_BYTECODE = $2000;
   CL_DB_SIGNED = $4000;
   CL_DB_BYTECODE_UNSIGNED = $8000;
+  CL_DB_UNSIGNED = $10000;
+  CL_DB_BYTECODE_STATS = $20000;
+  CL_DB_ENHANCED = $40000;
+  CL_DB_PCRE_STATS =$80000;
+  CL_DB_YARA_EXCLUDE = $100000;
+  CL_DB_YARA_ONLY = $200000;
+  {recommended db settings}
   CL_DB_STDOPT = (CL_DB_PHISHING or CL_DB_PHISHING_URLS or CL_DB_BYTECODE);
-
+  {scan options}
   CL_SCAN_RAW = $0;
   CL_SCAN_ARCHIVE = $1;
   CL_SCAN_MAIL = $2;
@@ -114,12 +127,27 @@ const
   CL_SCAN_HEURISTIC_PRECEDENCE = $80000;
   CL_SCAN_BLOCKMACROS = $100000;
   CL_SCAN_ALLMATCHES = $200000;
+  CL_SCAN_SWF = $400000;
+  CL_SCAN_PARTITION_INTXN = $800000;
+  CL_SCAN_FILE_PROPERTIES = $10000000;
+  // UNUSED =  0x20000000;
+  CL_SCAN_PERFORMANCE_INFO = $40000000;
   CL_SCAN_INTERNAL_COLLECT_SHA = $80000000;
-  CL_SCAN_STDOPT = ((((((CL_SCAN_ARCHIVE or CL_SCAN_MAIL) or CL_SCAN_OLE2) or CL_SCAN_PDF) or CL_SCAN_HTML) or CL_SCAN_PE) or CL_SCAN_ALGORITHMIC) or CL_SCAN_ELF;
-
+  {recommended scan settings}
+  CL_SCAN_STDOPT = ((((((CL_SCAN_ARCHIVE or CL_SCAN_MAIL) or CL_SCAN_OLE2) or CL_SCAN_PDF) or CL_SCAN_HTML) or CL_SCAN_PE) or CL_SCAN_ALGORITHMIC) or CL_SCAN_ELF or CL_SCAN_SWF;
+  {cl_countsigs options}
   CL_COUNTSIGS_OFFICIAL = $1;
   CL_COUNTSIGS_UNOFFICIAL = $2;
   CL_COUNTSIGS_ALL = CL_COUNTSIGS_OFFICIAL or CL_COUNTSIGS_UNOFFICIAL;
+
+  {  ??????????????
+/* For the new engine_options bit field in the engine */
+  #define ENGINE_OPTIONS_NONE             0x0
+ #define ENGINE_OPTIONS_DISABLE_CACHE    0x1
+ #define ENGINE_OPTIONS_FORCE_TO_DISK    0x2
+ #define ENGINE_OPTIONS_DISABLE_PE_STATS 0x4
+     ??????????????                 }
+
 
 type
   cli_dconf = record
