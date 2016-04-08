@@ -141,7 +141,7 @@ const
   CL_COUNTSIGS_ALL = CL_COUNTSIGS_OFFICIAL or CL_COUNTSIGS_UNOFFICIAL;
 
   {  ??????????????
-/* For the new engine_options bit field in the engine */
+/* For the new engine_options bit field in the engine 
   #define ENGINE_OPTIONS_NONE             0x0
  #define ENGINE_OPTIONS_DISABLE_CACHE    0x1
  #define ENGINE_OPTIONS_FORCE_TO_DISK    0x2
