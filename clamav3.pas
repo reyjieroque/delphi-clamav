@@ -134,6 +134,8 @@ const
   CL_SCAN_PERFORMANCE_INFO = $40000000;
   CL_SCAN_INTERNAL_COLLECT_SHA = $80000000;
   {recommended scan settings}
+   // problems with scan options ? you can switch from the previous settings (CL_SCAN_STDOPT)
+  //CL_SCAN_STDOPT = ((((((CL_SCAN_ARCHIVE or CL_SCAN_MAIL) or CL_SCAN_OLE2) or CL_SCAN_PDF) or CL_SCAN_HTML) or CL_SCAN_PE) or CL_SCAN_ALGORITHMIC) or CL_SCAN_ELF;
   CL_SCAN_STDOPT = ((((((CL_SCAN_ARCHIVE or CL_SCAN_MAIL) or CL_SCAN_OLE2) or CL_SCAN_PDF) or CL_SCAN_HTML) or CL_SCAN_PE) or CL_SCAN_ALGORITHMIC) or CL_SCAN_ELF or CL_SCAN_SWF;
   {cl_countsigs options}
   CL_COUNTSIGS_OFFICIAL = $1;
@@ -412,13 +414,16 @@ function IsClamAVLibPresent: Boolean;
 implementation
 
 uses
-{$IFDEF Windows} Windows, {$ENDIF} SysUtils,Dynlibs;
+{$IFDEF Windows} Windows, {$ENDIF}
+{$IFDEF Fpc} Dynlibs,{$ENDIF}
+SysUtils;
 
 var
   hlib: HMODULE = 0;
 
 procedure Freeclamav;
 begin
+  if (hlib<>0) then
   FreeLibrary(hlib);
   cl_init := nil;
   cl_engine_new := nil;
