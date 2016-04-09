@@ -1,6 +1,7 @@
 # Delphi/Object Pascal ClamAV API Binding
 <pre>
-Apr. 8, 2016 - Added support for Linux and Lazarus (https://github.com/GuvaCode - GuvaCode - guvacode@gmail.com)
+Apr. 8, 2016  - Added support for Linux and Lazarus (https://github.com/GuvaCode - GuvaCode - guvacode@gmail.com)
+              - changed constants.add sfw recommended scan setting (https://github.com/GuvaCode - GuvaCode - guvacode@gmail.com)
 
 Feb. 6, 2016 - 3:29 PM - Support libclamav.dll - 0.99.0
 
