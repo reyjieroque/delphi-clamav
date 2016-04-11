@@ -1,0 +1,75 @@
+object Form1: TForm1
+  Left = 0
+  Height = 345
+  Top = 0
+  Width = 630
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Sample Scanner - FPC Clamav'
+  ClientHeight = 345
+  ClientWidth = 630
+  Constraints.MaxHeight = 345
+  Constraints.MaxWidth = 630
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Visible = False
+  object M: TMemo
+    Left = 112
+    Height = 288
+    Top = 32
+    Width = 504
+    TabOrder = 4
+  end
+  object Button1: TButton
+    Left = 0
+    Height = 25
+    Top = 0
+    Width = 107
+    Caption = 'Init Clam Engine'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 0
+    Height = 25
+    Top = 24
+    Width = 107
+    Caption = 'Load DB'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object Button3: TButton
+    Left = 0
+    Height = 25
+    Top = 48
+    Width = 107
+    Caption = 'Scan Target'
+    OnClick = Button3Click
+    TabOrder = 2
+  end
+  object Label1: TLabel
+    Left = 112
+    Height = 15
+    Top = 7
+    Width = 33
+    Caption = 'Target'
+    ParentColor = False
+  end
+  object Target: TEdit
+    Left = 152
+    Height = 23
+    Top = 2
+    Width = 464
+    TabOrder = 3
+  end
+  object Label2: TLabel
+    Left = 476
+    Height = 15
+    Top = 320
+    Width = 140
+    Caption = 'reyjie.u.roque@gmail.com'
+    ParentColor = False
+  end
+end
