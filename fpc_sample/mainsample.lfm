@@ -15,6 +15,7 @@ object Form1: TForm1
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
+  LCLVersion = '1.7'
   Visible = False
   object M: TMemo
     Left = 112

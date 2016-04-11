@@ -172,10 +172,13 @@ procedure TForm1.Button4Click(Sender: TObject);
 var
   sigss : DWORD;
 begin
+  	//sigss := 0;
     cl_countsigs(PChar(path),CL_COUNTSIGS_ALL,sigss);
     Log('ClamAV cl_countsigs (CL_COUNTSIGS_ALL) : '+intToStr(sigss));
+    //sigss := 0;
     cl_countsigs(PChar(path),CL_COUNTSIGS_OFFICIAL,sigss);
     Log('ClamAV cl_countsigs (CL_COUNTSIGS_OFFICIAL) : '+intToStr(sigss));
+    //sigss := 0;
     cl_countsigs(PChar(path),CL_COUNTSIGS_UNOFFICIAL,sigss);
     Log('ClamAV cl_countsigs (CL_COUNTSIGS_UNOFFICIAL) : '+intToStr(sigss));
 end;
