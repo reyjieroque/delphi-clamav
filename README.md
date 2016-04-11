@@ -1,6 +1,7 @@
 # Delphi/Object Pascal ClamAV API Binding
 <pre>
 Apr. 11, 2016 - Added Lazarus-FPC sample code - reyjieroque
+<img src="https://github.com/reyjieroque/delphi-clamav/blob/master/fpc_sample/clamav.PNG">
 Apr. 10, 2016 - Added Compiler directive for FPC specific library(dynlibs) - (i think we need a sample project for both fpc and delphi)  - reyjieroque
 Apr. 8, 2016  - Added support for Linux and Lazarus (https://github.com/GuvaCode - GuvaCode - guvacode@gmail.com)
               - changed constants.add sfw recommended scan setting (https://github.com/GuvaCode - GuvaCode - guvacode@gmail.com)
