@@ -3,6 +3,7 @@ object Form1: TForm1
   Height = 345
   Top = 0
   Width = 630
+  ActiveControl = Button1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Sample Scanner - FPC Clamav'
@@ -71,5 +72,14 @@ object Form1: TForm1
     Width = 140
     Caption = 'reyjie.u.roque@gmail.com'
     ParentColor = False
+  end
+  object Button4: TButton
+    Left = 0
+    Height = 25
+    Top = 120
+    Width = 107
+    Caption = 'cl_countsigs'
+    OnClick = Button4Click
+    TabOrder = 5
   end
 end

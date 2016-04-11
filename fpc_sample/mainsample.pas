@@ -15,6 +15,7 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
     Label2: TLabel;
     Target: TEdit;
     Label1: TLabel;
@@ -22,6 +23,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -158,6 +160,18 @@ begin
   end else
     Log('AV-Engine not yet ready..');
 
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+var
+  sigss : DWORD;
+begin
+    cl_countsigs(PChar(path),CL_COUNTSIGS_ALL,sigss);
+    Log('ClamAV cl_countsigs (CL_COUNTSIGS_ALL) : '+intToStr(sigss));
+    cl_countsigs(PChar(path),CL_COUNTSIGS_OFFICIAL,sigss);
+    Log('ClamAV cl_countsigs (CL_COUNTSIGS_OFFICIAL) : '+intToStr(sigss));
+    cl_countsigs(PChar(path),CL_COUNTSIGS_UNOFFICIAL,sigss);
+    Log('ClamAV cl_countsigs (CL_COUNTSIGS_UNOFFICIAL) : '+intToStr(sigss));
 end;
 
 procedure TForm1.FormActivate(Sender: TObject);
