@@ -83,9 +83,15 @@ begin
   okret := 0;
   if (isEngineInit) and (not isDBLoaded) then
   begin
+   {$IFDEF Windows}
     // change the path here...
    // Path := 'database';
-    if not FileExists(Path+'\main.cvd') then
+   {$ENDIF}
+     {$IFDEF Linux}
+    //for linux return db directory
+    Path := cl_retdbdir;
+   {$ENDIF}
+    if not FileExists(Path+'/main.cvd') then
     begin
       Log('Database Missing [main.cvd], nothing to do..');
       Exit;
