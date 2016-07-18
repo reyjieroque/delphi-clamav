@@ -7,7 +7,7 @@ unit clamav3;
 interface
 
 const
- {$IFDEF Linux}
+ {$IFDEF Linux}              //for 0.99 and up libclamav.so.7
   External_library='/usr/lib/libclamav.so.7'; {Setup as you need}
   //Use an absolute path or create a Symlink
  {$ELSE}
