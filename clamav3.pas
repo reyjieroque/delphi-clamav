@@ -8,7 +8,7 @@ interface
 
 const
  {$IFDEF Linux}
-  External_library='/usr/lib/libclamav.so.6'; {Setup as you need}
+  External_library='/usr/lib/libclamav.so.7'; {Setup as you need}
   //Use an absolute path or create a Symlink
  {$ELSE}
   External_library = 'libclamav.dll'; {Setup as you need}
@@ -129,6 +129,8 @@ const
   CL_SCAN_ALLMATCHES = $200000;
   CL_SCAN_SWF = $400000;
   CL_SCAN_PARTITION_INTXN = $800000;
+  CL_SCAN_XMLDOCS = $1000000;
+  CL_SCAN_HWP3 = $2000000;
   CL_SCAN_FILE_PROPERTIES = $10000000;
   // UNUSED =  0x20000000;
   CL_SCAN_PERFORMANCE_INFO = $40000000;
@@ -136,18 +138,20 @@ const
   {recommended scan settings}
    // problems with scan options ? you can switch from the previous settings (CL_SCAN_STDOPT)
   //CL_SCAN_STDOPT = ((((((CL_SCAN_ARCHIVE or CL_SCAN_MAIL) or CL_SCAN_OLE2) or CL_SCAN_PDF) or CL_SCAN_HTML) or CL_SCAN_PE) or CL_SCAN_ALGORITHMIC) or CL_SCAN_ELF;
-  CL_SCAN_STDOPT = ((((((CL_SCAN_ARCHIVE or CL_SCAN_MAIL) or CL_SCAN_OLE2) or CL_SCAN_PDF) or CL_SCAN_HTML) or CL_SCAN_PE) or CL_SCAN_ALGORITHMIC) or CL_SCAN_ELF or CL_SCAN_SWF;
+  CL_SCAN_STDOPT = (CL_SCAN_ARCHIVE or CL_SCAN_MAIL or CL_SCAN_OLE2 or CL_SCAN_PDF or CL_SCAN_HTML or CL_SCAN_PE or CL_SCAN_ALGORITHMIC or CL_SCAN_ELF or CL_SCAN_SWF or  CL_SCAN_XMLDOCS or CL_SCAN_HWP3);
   {cl_countsigs options}
   CL_COUNTSIGS_OFFICIAL = $1;
   CL_COUNTSIGS_UNOFFICIAL = $2;
   CL_COUNTSIGS_ALL = CL_COUNTSIGS_OFFICIAL or CL_COUNTSIGS_UNOFFICIAL;
 
   {  ??????????????
-/* For the new engine_options bit field in the engine 
+  /* For the new engine_options bit field in the engine */
   #define ENGINE_OPTIONS_NONE             0x0
- #define ENGINE_OPTIONS_DISABLE_CACHE    0x1
- #define ENGINE_OPTIONS_FORCE_TO_DISK    0x2
- #define ENGINE_OPTIONS_DISABLE_PE_STATS 0x4
+  #define ENGINE_OPTIONS_DISABLE_CACHE    0x1
+  #define ENGINE_OPTIONS_FORCE_TO_DISK    0x2
+  #define ENGINE_OPTIONS_DISABLE_PE_STATS 0x4
+  #define ENGINE_OPTIONS_DISABLE_PE_CERTS 0x8
+  #define ENGINE_OPTIONS_PE_DUMPCERTS     0x10
      ??????????????                 }
 
 
@@ -528,8 +532,15 @@ end;
 
 function IsClamAVLibPresent: Boolean;
 begin
-  Result := FileExists(External_library);
+  { *Converted from FileExists* }
+  {$IFDEF Fpc}
+       Result := FileExists(External_library);
+  {$ELSE}
+  	Result := FileExistsUTF8(External_library);
+  {$ENDIF}
 end;
+
+
 
 initialization
   IsLibraryLoaded := False;
