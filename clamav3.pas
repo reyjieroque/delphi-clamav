@@ -8,7 +8,7 @@ interface
 
 const
  {$IFDEF Linux}
-  External_library='libclamav.so.7';//for 0.99 and up libclamav.so.7
+  External_library='libclamav.so.7'; {Setup as you need}
  {$ELSE}
   External_library = 'libclamav.dll'; {Setup as you need}
  {$ENDIF}
@@ -128,8 +128,6 @@ const
   CL_SCAN_ALLMATCHES = $200000;
   CL_SCAN_SWF = $400000;
   CL_SCAN_PARTITION_INTXN = $800000;
-  CL_SCAN_XMLDOCS = $1000000;
-  CL_SCAN_HWP3 = $2000000;
   CL_SCAN_FILE_PROPERTIES = $10000000;
   // UNUSED =  0x20000000;
   CL_SCAN_PERFORMANCE_INFO = $40000000;
@@ -137,20 +135,18 @@ const
   {recommended scan settings}
    // problems with scan options ? you can switch from the previous settings (CL_SCAN_STDOPT)
   //CL_SCAN_STDOPT = ((((((CL_SCAN_ARCHIVE or CL_SCAN_MAIL) or CL_SCAN_OLE2) or CL_SCAN_PDF) or CL_SCAN_HTML) or CL_SCAN_PE) or CL_SCAN_ALGORITHMIC) or CL_SCAN_ELF;
-  CL_SCAN_STDOPT = (CL_SCAN_ARCHIVE or CL_SCAN_MAIL or CL_SCAN_OLE2 or CL_SCAN_PDF or CL_SCAN_HTML or CL_SCAN_PE or CL_SCAN_ALGORITHMIC or CL_SCAN_ELF or CL_SCAN_SWF or  CL_SCAN_XMLDOCS or CL_SCAN_HWP3);
+  CL_SCAN_STDOPT = ((((((CL_SCAN_ARCHIVE or CL_SCAN_MAIL) or CL_SCAN_OLE2) or CL_SCAN_PDF) or CL_SCAN_HTML) or CL_SCAN_PE) or CL_SCAN_ALGORITHMIC) or CL_SCAN_ELF or CL_SCAN_SWF;
   {cl_countsigs options}
   CL_COUNTSIGS_OFFICIAL = $1;
   CL_COUNTSIGS_UNOFFICIAL = $2;
   CL_COUNTSIGS_ALL = CL_COUNTSIGS_OFFICIAL or CL_COUNTSIGS_UNOFFICIAL;
 
   {  ??????????????
-  /* For the new engine_options bit field in the engine */
+/* For the new engine_options bit field in the engine 
   #define ENGINE_OPTIONS_NONE             0x0
-  #define ENGINE_OPTIONS_DISABLE_CACHE    0x1
-  #define ENGINE_OPTIONS_FORCE_TO_DISK    0x2
-  #define ENGINE_OPTIONS_DISABLE_PE_STATS 0x4
-  #define ENGINE_OPTIONS_DISABLE_PE_CERTS 0x8
-  #define ENGINE_OPTIONS_PE_DUMPCERTS     0x10
+ #define ENGINE_OPTIONS_DISABLE_CACHE    0x1
+ #define ENGINE_OPTIONS_FORCE_TO_DISK    0x2
+ #define ENGINE_OPTIONS_DISABLE_PE_STATS 0x4
      ??????????????                 }
 
 
@@ -396,7 +392,7 @@ var
   cl_statinidir: function(dirname: Pchar; var dbstat: cl_stat): longint; cdecl;
   cl_statchkdir: function(var dbstat: cl_stat): longint; cdecl;
   cl_statfree: function(var dbstat: cl_stat): longint; cdecl;
-  cl_countsigs: function(path: Pchar; countoptions: dword; var sigs: dword): longint; cdecl;
+  cl_countsigs: function(path: Pchar; countoptions: dword; var sigs: dword): {longint} int64; cdecl;
   cl_debug: procedure; cdecl;
   cl_retflevel: function: dword; cdecl;
   cl_retver: function: Pchar; cdecl;
@@ -418,11 +414,13 @@ implementation
 
 uses
 {$IFDEF Windows} Windows, {$ENDIF}
+{$IFDEF LINUX}Process, {$ENDIF}
 {$IFDEF Fpc} Dynlibs,{$ENDIF}
-SysUtils;
+SysUtils, Classes;
 
 var
   hlib: HMODULE = 0;
+
 
 procedure Freeclamav;
 begin
@@ -530,22 +528,54 @@ begin
 end;
 
 function IsClamAVLibPresent: Boolean;
+{$IFDEF LINUX}
+  var
+    OutList: Tstringlist;
+    Proc: TProcess;
+ {$ENDIF}
 begin
-  { *Converted from FileExists* }
   {$IFDEF Fpc}
-       Result := FileExists(External_library);
+   {$IFDEF Linux}
+  OutList := Tstringlist.create;
+  Proc := TProcess.Create(nil);
+  Proc.Options := [poWaitOnExit,poUsePipes];
+  Proc.Executable := 'whereis';
+  Proc.Parameters.Add('-b');
+  Proc.Parameters.Add(External_library);
+  Proc.Execute;
+  OutList.LoadFromStream(Proc.Output);
+  Proc.Free;
+  if Length(OutList.Strings[0])>13 then Result:=true
+   else Result:=false;
+   OutList.free;
+    {$ELSE}
+        Result := FileExists(External_library);
+   {$ENDIF}
   {$ELSE}
   	Result := FileExistsUTF8(External_library);
   {$ENDIF}
 end;
 
-
+procedure Initclamav;
+begin
+  try
+    IsLibraryLoaded := False;
+    if IsClamAVLibPresent then
+    Loadclamav(External_library);
+  except
+    on E: Exception do
+     begin
+     WriteLn(E.Message);
+     Halt; // go finalization
+    end;
+  end;
+end;
 
 initialization
-  IsLibraryLoaded := False;
-  Loadclamav(External_library);
+Initclamav;
+
 finalization
-  Freeclamav;
+ Freeclamav;
 
 end.
 
