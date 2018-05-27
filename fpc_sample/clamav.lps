@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="9"/>
     <BuildModes Active="Default"/>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="clamav.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -21,8 +21,8 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainSample"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="39"/>
-        <CursorPos X="5" Y="169"/>
+        <TopLine Value="129"/>
+        <CursorPos X="101" Y="144"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -32,14 +32,22 @@
         <Filename Value="clamav3.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="147"/>
-        <CursorPos X="3" Y="142"/>
+        <TopLine Value="375"/>
+        <CursorPos X="93" Y="395"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="..\..\.cache\.fr-5OnInk\Basic.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="41"/>
+        <CursorPos X="34" Y="42"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit3>
     </Units>
-    <JumpHistory Count="27" HistoryIndex="26">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="clamav3.pas"/>
       </Position1>
@@ -147,6 +155,14 @@
         <Filename Value="mainsample.pas"/>
         <Caret Line="175" Column="51" TopLine="154"/>
       </Position27>
+      <Position28>
+        <Filename Value="mainsample.pas"/>
+        <Caret Line="169" Column="5" TopLine="140"/>
+      </Position28>
+      <Position29>
+        <Filename Value="mainsample.pas"/>
+        <Caret Line="144" Column="101" TopLine="129"/>
+      </Position29>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

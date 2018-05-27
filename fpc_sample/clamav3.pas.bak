@@ -392,7 +392,7 @@ var
   cl_statinidir: function(dirname: Pchar; var dbstat: cl_stat): longint; cdecl;
   cl_statchkdir: function(var dbstat: cl_stat): longint; cdecl;
   cl_statfree: function(var dbstat: cl_stat): longint; cdecl;
-  cl_countsigs: function(path: Pchar; countoptions: dword; var sigs: dword): {longint} int64; cdecl;
+  cl_countsigs: function(path: Pchar; countoptions: dword; var sigs: dword): longint; cdecl;
   cl_debug: procedure; cdecl;
   cl_retflevel: function: dword; cdecl;
   cl_retver: function: Pchar; cdecl;
@@ -414,13 +414,11 @@ implementation
 
 uses
 {$IFDEF Windows} Windows, {$ENDIF}
-{$IFDEF LINUX}Process, {$ENDIF}
 {$IFDEF Fpc} Dynlibs,{$ENDIF}
-SysUtils, Classes;
+SysUtils;
 
 var
   hlib: HMODULE = 0;
-
 
 procedure Freeclamav;
 begin
@@ -528,29 +526,9 @@ begin
 end;
 
 function IsClamAVLibPresent: Boolean;
-{$IFDEF LINUX}
-  var
-    OutList: Tstringlist;
-    Proc: TProcess;
- {$ENDIF}
 begin
   {$IFDEF Fpc}
-   {$IFDEF Linux}
-  OutList := Tstringlist.create;
-  Proc := TProcess.Create(nil);
-  Proc.Options := [poWaitOnExit,poUsePipes];
-  Proc.Executable := 'whereis';
-  Proc.Parameters.Add('-b');
-  Proc.Parameters.Add(External_library);
-  Proc.Execute;
-  OutList.LoadFromStream(Proc.Output);
-  Proc.Free;
-  if Length(OutList.Strings[0])>13 then Result:=true
-   else Result:=false;
-   OutList.free;
-    {$ELSE}
-        Result := FileExists(External_library);
-   {$ENDIF}
+       Result := FileExists(External_library);
   {$ELSE}
   	Result := FileExistsUTF8(External_library);
   {$ENDIF}
@@ -560,7 +538,6 @@ procedure Initclamav;
 begin
   try
     IsLibraryLoaded := False;
-    if IsClamAVLibPresent then
     Loadclamav(External_library);
   except
     on E: Exception do
@@ -572,7 +549,7 @@ begin
 end;
 
 initialization
-Initclamav;
+  Initclamav;
 
 finalization
  Freeclamav;

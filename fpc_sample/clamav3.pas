@@ -8,8 +8,7 @@ interface
 
 const
  {$IFDEF Linux}
-  External_library='/usr/lib/libclamav.so.6'; {Setup as you need}
-  //Use an absolute path or create a Symlink
+  External_library='libclamav.so.7'; {Setup as you need}
  {$ELSE}
   External_library = 'libclamav.dll'; {Setup as you need}
  {$ENDIF}
@@ -393,7 +392,7 @@ var
   cl_statinidir: function(dirname: Pchar; var dbstat: cl_stat): longint; cdecl;
   cl_statchkdir: function(var dbstat: cl_stat): longint; cdecl;
   cl_statfree: function(var dbstat: cl_stat): longint; cdecl;
-  cl_countsigs: function(path: Pchar; countoptions: dword; var sigs: dword): longint; cdecl;
+  cl_countsigs: function(path: Pchar; countoptions: dword; var sigs: dword): {longint} int64; cdecl;
   cl_debug: procedure; cdecl;
   cl_retflevel: function: dword; cdecl;
   cl_retver: function: Pchar; cdecl;
@@ -415,11 +414,13 @@ implementation
 
 uses
 {$IFDEF Windows} Windows, {$ENDIF}
+{$IFDEF LINUX}Process, {$ENDIF}
 {$IFDEF Fpc} Dynlibs,{$ENDIF}
-SysUtils;
+SysUtils, Classes;
 
 var
   hlib: HMODULE = 0;
+
 
 procedure Freeclamav;
 begin
@@ -527,22 +528,54 @@ begin
 end;
 
 function IsClamAVLibPresent: Boolean;
+{$IFDEF LINUX}
+  var
+    OutList: Tstringlist;
+    Proc: TProcess;
+ {$ENDIF}
 begin
-  { *Converted from FileExists* }
   {$IFDEF Fpc}
-       Result := FileExists(External_library);
+   {$IFDEF Linux}
+  OutList := Tstringlist.create;
+  Proc := TProcess.Create(nil);
+  Proc.Options := [poWaitOnExit,poUsePipes];
+  Proc.Executable := 'whereis';
+  Proc.Parameters.Add('-b');
+  Proc.Parameters.Add(External_library);
+  Proc.Execute;
+  OutList.LoadFromStream(Proc.Output);
+  Proc.Free;
+  if Length(OutList.Strings[0])>13 then Result:=true
+   else Result:=false;
+   OutList.free;
+    {$ELSE}
+        Result := FileExists(External_library);
+   {$ENDIF}
   {$ELSE}
   	Result := FileExistsUTF8(External_library);
   {$ENDIF}
 end;
 
-
+procedure Initclamav;
+begin
+  try
+    IsLibraryLoaded := False;
+    if IsClamAVLibPresent then
+    Loadclamav(External_library);
+  except
+    on E: Exception do
+     begin
+     WriteLn(E.Message);
+     Halt; // go finalization
+    end;
+  end;
+end;
 
 initialization
-  IsLibraryLoaded := False;
-  Loadclamav(External_library);
+Initclamav;
+
 finalization
-  Freeclamav;
+ Freeclamav;
 
 end.
 
